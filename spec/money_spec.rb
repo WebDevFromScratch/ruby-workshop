@@ -3,7 +3,7 @@ require_relative '../money'
 describe Money do
   describe 'Kernel#Money' do
     it 'creates a Money instance' do
-      expect(Money(10, 'USD')).to be_an_instance_of(Array)
+      expect(Money(10, 'USD')).to be_an_instance_of(Money)
     end
   end
 
@@ -35,6 +35,12 @@ describe Money do
         expect(money_gbp).to be_an_instance_of(Money)
         expect(money_gbp.currency).to eq('GBP')
         expect(money_gbp.amount).to eq(10)
+      end
+    end
+
+    describe '.exchange' do
+      it 'should return an Exchange instance' do
+        expect(Money.exchange).to be_an_instance_of(Exchange)
       end
     end
   end

@@ -1,3 +1,5 @@
+require_relative 'exchange'
+
 module Kernel
   def Money(amount, currency)
     Money.new(amount, currency)
@@ -14,6 +16,10 @@ class Money
     define_singleton_method method_name do |amount|
       self.new(amount, method_name.to_s.split('_').last.upcase)
     end
+  end
+
+  def self.exchange
+    Exchange.new
   end
 
   def to_s
