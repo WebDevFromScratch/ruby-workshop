@@ -5,12 +5,18 @@ module Kernel
 end
 
 class Money
+  include Comparable
+
   def initialize(amount, currency)
     @amount = amount.to_f
     @currency = currency.to_s
   end
 
   attr_accessor :amount, :currency
+
+  def <=>(anOther)
+    exchange_to('USD').amount <=> anOther.exchange_to('USD').amount
+  end
 
   [:from_usd, :from_eur, :from_gbp].each do |method_name|
     define_singleton_method method_name do |amount|
@@ -25,6 +31,7 @@ class Money
   def exchange_to(currency)
     self.amount = self.class.exchange.convert(self, currency)
     self.currency = currency
+    self
   end
 
   def to_s

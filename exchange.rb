@@ -44,7 +44,12 @@ class Exchange
     wrong_currency = missing_currency(input_currency, output_currency)
 
     raise InvalidCurrency, "Invalid currency: #{wrong_currency}" unless currencies_present?(input_currency, output_currency)
-    amount_to_convert * EXCHANGE_RATES["#{input_currency}_#{output_currency}"]
+
+    if input_currency == output_currency
+      amount_to_convert
+    else
+      amount_to_convert * EXCHANGE_RATES["#{input_currency}_#{output_currency}"]
+    end
   end
 
   private
