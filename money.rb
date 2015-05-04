@@ -1,5 +1,3 @@
-require_relative 'exchange'
-
 module Kernel
   def Money(amount, currency)
     Money.new(amount, currency)

@@ -1,4 +1,9 @@
+class InvalidCurrency < StandardError
+end
+
 class Exchange
+  CURRENCIES = ['USD', 'EUR', 'CHF', 'JPY', 'PLN']
+
   EXCHANGE_RATES = {
     'USD_EUR' => 0.896288,
     'USD_GBP' => 0.661337,
@@ -36,8 +41,19 @@ class Exchange
     amount_to_convert = money.amount
     input_currency = money.currency
     output_currency = currency
-    exchange = "#{input_currency}_#{output_currency}"
+    wrong_currency = missing_currency(input_currency, output_currency)
 
-    amount_to_convert * EXCHANGE_RATES["#{exchange}"]
+    raise InvalidCurrency, "Invalid currency: #{wrong_currency}" unless currencies_present?(input_currency, output_currency)
+    amount_to_convert * EXCHANGE_RATES["#{input_currency}_#{output_currency}"]
+  end
+
+  private
+
+  def currencies_present?(input_currency, output_currency)
+    CURRENCIES.include?(input_currency) && CURRENCIES.include?(output_currency)
+  end
+
+  def missing_currency(input_currency, output_currency)
+    CURRENCIES.include?(input_currency) ? output_currency : input_currency
   end
 end
