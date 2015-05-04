@@ -1,3 +1,9 @@
+module Kernel
+  def Money(amount, currency)
+    Money.new(amount, currency)
+  end
+end
+
 class Money
   def initialize(amount, currency)
     @amount = amount.to_f

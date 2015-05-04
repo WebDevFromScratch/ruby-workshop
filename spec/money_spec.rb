@@ -1,6 +1,12 @@
 require_relative '../money'
 
 describe Money do
+  describe 'Kernel#Money' do
+    it 'creates a Money instance' do
+      expect(Money(10, 'USD')).to be_an_instance_of(Array)
+    end
+  end
+
   describe 'Class methods' do
     describe '.from_usd' do
       let(:money_usd) { Money.from_usd(10) }
