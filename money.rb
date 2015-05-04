@@ -12,6 +12,8 @@ class Money
     @currency = currency.to_s
   end
 
+  attr_accessor :amount, :currency
+
   [:from_usd, :from_eur, :from_gbp].each do |method_name|
     define_singleton_method method_name do |amount|
       self.new(amount, method_name.to_s.split('_').last.upcase)
@@ -22,20 +24,17 @@ class Money
     Exchange.new
   end
 
+  def exchange_to(currency)
+    self.amount = self.class.exchange.convert(self, currency)
+    self.currency = currency
+  end
+
   def to_s
     "#{amount_with_two_decimals} #{currency}"
   end
 
   def inspect
     "#<Money #{self.to_s}>"
-  end
-
-  def amount
-    @amount
-  end
-
-  def currency
-    @currency
   end
 
   private

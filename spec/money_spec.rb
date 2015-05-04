@@ -59,5 +59,19 @@ describe Money do
         expect(money.inspect).to eq('#<Money 10.00 USD>')
       end
     end
+
+    describe '#exchange_to' do
+      it 'should call the Exchange#convert method' do
+        expect_any_instance_of(Exchange).to receive(:convert)
+
+        money.exchange_to('EUR')
+      end
+
+      it 'should update currency' do
+        money.exchange_to('EUR')
+
+        expect(money.currency).to eq('EUR')
+      end
+    end
   end
 end
