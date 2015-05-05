@@ -1,5 +1,5 @@
 module Kernel
-  def Money(amount, currency)
+  def Money(amount, currency = Money.default_currency)
     Money.new(amount, currency)
   end
 end
@@ -7,12 +7,17 @@ end
 class Money
   include Comparable
 
-  def initialize(amount, currency)
-    @amount = amount.to_f
-    @currency = currency.to_s
+  class << self
+    attr_accessor :default_currency
   end
 
   attr_accessor :amount, :currency
+
+  def initialize(amount, currency = self.class.default_currency)
+    raise ArgumentError, 'No currency given' if currency == nil
+    @amount = amount.to_f
+    @currency = currency.to_s
+  end
 
   def <=>(anOther)
     exchange_to('USD').amount <=> anOther.exchange_to('USD').amount
@@ -41,10 +46,6 @@ class Money
     end
   end
 
-  def self.exchange
-    Exchange.new
-  end
-
   def exchange_to(currency)
     self.amount = self.class.exchange.convert(self, currency)
     self.currency = currency
@@ -57,6 +58,20 @@ class Money
 
   def inspect
     "#<Money #{self.to_s}>"
+  end
+
+  def self.exchange
+    Exchange.new
+  end
+
+  def self.using_default_currency(currency)
+    begin
+      self.default_currency = currency
+
+      yield
+    ensure
+      self.default_currency = nil
+    end
   end
 
   private

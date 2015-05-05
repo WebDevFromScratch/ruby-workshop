@@ -8,6 +8,25 @@ describe Money do
   end
 
   describe 'Class methods' do
+    describe '.initialize' do
+      context 'with valid arguments' do
+        it 'should successfully create an instance of Money' do
+          expect(Money.new(10, 'USD')).to be_an_instance_of(Money)
+        end
+      end
+      context 'without currency' do
+        it 'should raise an ArgumentError' do
+          expect { Money.new(10) }.to raise_exception(ArgumentError)
+        end
+
+        context 'used with .using_default_currency' do
+          it 'should successfully create an instance of Money' do
+            expect(Money.using_default_currency('USD') { Money.new(10) }).to be_an_instance_of(Money)
+          end
+        end
+      end
+    end
+
     describe '.from_usd' do
       let(:money_usd) { Money.from_usd(10) }
 
