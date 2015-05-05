@@ -61,8 +61,11 @@ describe Money do
     end
 
     describe '#exchange_to' do
+      let(:exchange) { double('Exchange', convert: true) }
+      before { allow(money.class).to receive(:exchange).and_return(exchange) }
+
       it 'should call the Exchange#convert method' do
-        expect_any_instance_of(Exchange).to receive(:convert)
+        expect(money.class.exchange).to receive(:convert)
 
         money.exchange_to('EUR')
       end
@@ -71,6 +74,23 @@ describe Money do
         money.exchange_to('EUR')
 
         expect(money.currency).to eq('EUR')
+      end
+    end
+
+    describe '#method_missing' do
+      before { stub_const('Exchange::CURRENCIES', ['USD', 'EUR']) }
+
+      context 'with correct conversion method' do
+        it 'should call the #exchange_to method with expected argument' do
+          expect(money).to receive(:exchange_to)
+          expect { money.to_eur }.not_to raise_exception
+        end
+      end
+
+      context 'with undefined method' do
+        it 'should raise NoMethodError' do
+          expect { money.to_wtf }.to raise_exception(NoMethodError)
+        end
       end
     end
   end

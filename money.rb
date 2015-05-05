@@ -24,6 +24,23 @@ class Money
     end
   end
 
+  def method_missing(name)
+    name = name.to_s
+    if correct_conversion_method?(name)
+      self.exchange_to(name.split('_').last.upcase)
+    else
+      raise NoMethodError, "Unknown method: #{name}"
+    end
+  end
+
+  def respond_to?(name)
+    if correct_conversion_method?(name.to_s)
+      true
+    else
+      super
+    end
+  end
+
   def self.exchange
     Exchange.new
   end
@@ -46,5 +63,9 @@ class Money
 
   def amount_with_two_decimals
     sprintf('%.2f', amount)
+  end
+
+  def correct_conversion_method?(name)
+    name.split('_').count == 2 && name.split('_').first == 'to' && CURRENCIES.include?(name.split('_').last.upcase)
   end
 end
